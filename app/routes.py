@@ -1,4 +1,5 @@
 import os
+import subprocess
 import secrets
 from flask import render_template, url_for, flash, redirect, request
 from app import app, db, bcrypt
@@ -81,15 +82,18 @@ def spellcheck():
     form = SpellCheckerForm()
     if form.validate_on_submit():
         input_text = form.input_content.data
+        
+        spellcheck_file_path = os.path.join(app.root_path, 'spellcheck/spell_check')
         input_file_path = os.path.join(app.root_path, 'spellcheck/input.txt')
         wordlist_file_path = os.path.join(app.root_path, 'spellcheck/wordlist.txt')
+        
         with open(input_file_path, 'w') as f:
             f.write(str(input_text))
-        # flash('Text to be spell checked has been posted!', 'success')
-        # this is for testing only
-        # once the file is created - call spellcheck input_file_path wordlist_file_path
-        # form.misspelled_content.data = subprocess output
+
         form.input_content.data = input_text
-        form.misspelled_content.data = input_text
-        # return redirect(url_for('spellcheck'))
+        misspelled_words = subprocess.run([spellcheck_file_path, input_file_path, wordlist_file_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        form.misspelled_content.data = misspelled_words
+    else:
+        flash('Error creating input file for spell checker!', 'danger')
+        return redirect(url_for('spellcheck'))
     return render_template('spellcheck.html', form=form)
