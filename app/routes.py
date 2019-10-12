@@ -83,17 +83,17 @@ def spellcheck():
     if form.validate_on_submit():
         input_text = form.input_content.data
         
-        spellcheck_file_path = os.path.join(app.root_path, 'spellcheck/spell_check')
+        spellcheck_file_path = os.path.join(app.root_path, 'spellcheck/a.out')
         input_file_path = os.path.join(app.root_path, 'spellcheck/input.txt')
         wordlist_file_path = os.path.join(app.root_path, 'spellcheck/wordlist.txt')
         
         with open(input_file_path, 'w') as f:
             f.write(str(input_text))
+        if not f:
+            flash('Error creating input file for spell checker!', 'danger')
+            return redirect(url_for('spellcheck'))
 
         form.input_content.data = input_text
         misspelled_words = subprocess.run([spellcheck_file_path, input_file_path, wordlist_file_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
-        form.misspelled_content.data = misspelled_words
-    else:
-        flash('Error creating input file for spell checker!', 'danger')
-        return redirect(url_for('spellcheck'))
+        form.misspelled_content.data = misspelled_words.replace("\n", ", ").strip()[:-1]
     return render_template('spellcheck.html', form=form)

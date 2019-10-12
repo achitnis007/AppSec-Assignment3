@@ -28,6 +28,10 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
+class SpellCheckerForm(FlaskForm):
+    input_content = TextAreaField('Type or Paste Text to Spell Check', validators=[DataRequired()])
+    misspelled_content = TextAreaField('Misspelled Words', render_kw={'readonly': True})
+    submit = SubmitField('Spell Check')
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -46,8 +50,3 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('Entered email address is already used. Please choose a different email address!')
-    
-class SpellCheckerForm(FlaskForm):
-    input_content = TextAreaField('Type or Paste Text to Spell Check', validators=[DataRequired()])
-    misspelled_content = TextAreaField('Misspelled Words', render_kw={'readonly': True})
-    submit = SubmitField('Spell Check')

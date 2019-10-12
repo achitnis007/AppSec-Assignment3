@@ -7,16 +7,26 @@
 				<legend class="border-bottom mb-4">Spell Checker</legend>				
 				<div class="form-group">
 					{{ form.input_content.label(class="form-control-label") }}
-					{% if form.input_content.errors %}
-						{{ form.input_content(class="form-control form-control-lg is-invalid") }}
-						<div class="invalid-feedback">
-							{% for error in form.input_content.errors %}
-								<span>{{ error }}</span>
-							{% endfor %}
-						</div>
+                    {% if form.input_content.errors %}
+                        {{ form.input_content(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.input_content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
 					{% else %}
-						{{ form.input_content(class="form-control form-control-lg") }}
-					{% endif %}
+						{{ form.input_content(class="form-control form-control-lg") }}					
+                    {% endif %}					
+					
+					{% with messages = get_flashed_messages(with_categories=true) %}
+					  {% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					  {% endif %}
+					{% endwith %}
 				</div>
 				<div class="form-group">
 					{{ form.misspelled_content.label(class="form-control-label") }}
@@ -33,11 +43,7 @@
 				</div>				
 			</fieldset>
 			<div class="form-group">
-				{% if current_user.is_authenticated %}
-					{{ form.submit(class="btn btn-outline-info") }}
-				{% else %}
-					{{ form.submit(class="btn btn-outline-info").disabled }}
-				{% endif %}
+				{{ form.submit(class="btn btn-outline-info") }}
 			</div>
 		</form>
 	</div>    
