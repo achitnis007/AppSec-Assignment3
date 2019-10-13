@@ -76,7 +76,7 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
-@app.route("/spellcheck", methods=['GET','POST'])
+@app.route("/spell_check", methods=['GET','POST'])
 @login_required
 def spellcheck():
     form = SpellCheckerForm()
@@ -94,6 +94,7 @@ def spellcheck():
             return redirect(url_for('spellcheck'))
 
         form.input_content.data = input_text
+        form.output_content.data = input_text        
         misspelled_words = subprocess.run([spellcheck_file_path, input_file_path, wordlist_file_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
         form.misspelled_content.data = misspelled_words.replace("\n", ", ").strip()[:-1]
     return render_template('spellcheck.html', form=form)

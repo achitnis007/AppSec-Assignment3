@@ -29,8 +29,9 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 class SpellCheckerForm(FlaskForm):
-    input_content = TextAreaField('Type or Paste Text to Spell Check', validators=[DataRequired()])
-    misspelled_content = TextAreaField('Misspelled Words', render_kw={'readonly': True})
+    input_content = TextAreaField('Input Text to Spellchecker', validators=[DataRequired()])
+    output_content = TextAreaField('Output Text from Spellchecker', render_kw={'readonly': True})
+    misspelled_content = TextAreaField('Misspelled Words', render_kw={'readonly': True})    
     submit = SubmitField('Spell Check')
 
 class UpdateAccountForm(FlaskForm):

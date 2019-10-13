@@ -5,7 +5,7 @@
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
 				<legend class="border-bottom mb-4">Spell Checker</legend>				
-				<div class="form-group">
+				<div id=inputtext class="form-group">
 					{{ form.input_content.label(class="form-control-label") }}
                     {% if form.input_content.errors %}
                         {{ form.input_content(class="form-control form-control-lg is-invalid") }}
@@ -28,7 +28,20 @@
 					  {% endif %}
 					{% endwith %}
 				</div>
-				<div class="form-group">
+				<div id=textout class="form-group">
+					{{ form.output_content.label(class="form-control-label") }}
+					{{ form.output_content(class="form-control form-control-lg") }}
+					{% with messages = get_flashed_messages(with_categories=true) %}
+					  {% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					  {% endif %}
+					{% endwith %}
+				</div>				
+				<div id=misspelled  class="form-group">
 					{{ form.misspelled_content.label(class="form-control-label") }}
 					{{ form.misspelled_content(class="form-control form-control-lg") }}
 					{% with messages = get_flashed_messages(with_categories=true) %}
