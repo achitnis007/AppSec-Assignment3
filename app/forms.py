@@ -4,10 +4,12 @@ from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User
+import phonenumbers
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email')
+    phone = StringField('Phone', validators=[DataRequired()])    
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=20)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
@@ -18,25 +20,52 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Entered user name is not available. Please choose a different name!')
     
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user:
-            raise ValidationError('Entered email address is already used. Please choose a different email address!')
+        if len(email.data) > 0:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError('Entered email address is already used. Please choose a different email address!')
     
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('error - Invalid phone number.')
+        try:
+            input_number = phonenumbers.parse(field.data)
+            if not phonenumbers.is_valid_number(input_number):
+                raise ValidationError('error - Invalid phone number.')
+        except:
+            input_number = phonenumbers.parse("+1"+field.data)
+            if not phonenumbers.is_valid_number(input_number):
+                raise ValidationError('error - Invalid phone number.')
+                
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=20)])
+    phone = StringField('Phone', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+    
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('error - Invalid phone number.')
+        try:
+            input_number = phonenumbers.parse(field.data)
+            if not phonenumbers.is_valid_number(input_number):
+                raise ValidationError('error - Invalid phone number.')
+        except:
+            input_number = phonenumbers.parse("+1"+field.data)
+            if not phonenumbers.is_valid_number(input_number):
+                raise ValidationError('error - Invalid phone number.')
 
 class SpellCheckerForm(FlaskForm):
-    input_content = TextAreaField('Input Text to Spellchecker', validators=[DataRequired()])
-    output_content = TextAreaField('Output Text from Spellchecker', render_kw={'readonly': True})
-    misspelled_content = TextAreaField('Misspelled Words', render_kw={'readonly': True})    
+    input_content = TextAreaField('Input Text to Spellchecker Web App', validators=[DataRequired()])
+    output_content = TextAreaField('Output Text to Spellchecker Service', render_kw={'readonly': True})
+    misspelled_content = TextAreaField('Misspelled Words from Spellchecker Service', render_kw={'readonly': True})    
     submit = SubmitField('Spell Check')
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Phone', validators=[DataRequired()])    
+    email = StringField('Email')
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'gif', 'png'])])
     submit = SubmitField('Update Info')
     
@@ -47,7 +76,20 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('Entered user name is not available. Please choose a different name!')
     
     def validate_email(self, email):
-        if email.data != current_user.email:
-            user = User.query.filter_by(email=email.data).first()
-            if user:
-                raise ValidationError('Entered email address is already used. Please choose a different email address!')
+        if len(email.data) > 0:
+            if email.data != current_user.email:
+                user = User.query.filter_by(email=email.data).first()
+                if user:
+                    raise ValidationError('Entered email address is already used. Please choose a different email address!')
+
+    def validate_phone(form, field):
+        if len(field.data) > 16:
+            raise ValidationError('error - Invalid phone number.')
+        try:
+            input_number = phonenumbers.parse(field.data)
+            if not phonenumbers.is_valid_number(input_number):
+                raise ValidationError('error - Invalid phone number.')
+        except:
+            input_number = phonenumbers.parse("+1"+field.data)
+            if not phonenumbers.is_valid_number(input_number):
+                raise ValidationError('error - Invalid phone number.')

@@ -19,13 +19,17 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
+    if request.method == 'GET':
+        return render_template('register.html', title='Register', form=form)
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        user = User(username=form.username.data, phone=form.phone.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash(f'Your account has been created - please log in!', 'success')
+        flash(f'success - Your account has been created - please log in!', 'success')
         return redirect(url_for('login'))
+    else:
+        flash(f'failure - Acount Registrtion failed - please try again!', 'danger')
     return render_template('register.html', title='Register', form=form)
     
 @app.route("/login", methods=['GET','POST'])
@@ -35,12 +39,14 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if not user or not bcrypt.check_password_hash(user.password, form.password.data):
+            flash('Incorrect - Login Unsuccessfull. Please check username and password', 'danger')
+        elif user.phone != form.phone.data:
+            flash('Two-factor failure - Login Unsuccessfull. Please check phone number', 'danger')
+        else:
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('spellcheck'))
-        else:
-            flash('Login Unsuccessfull. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 @app.route("/logout")
@@ -67,12 +73,14 @@ def account():
             current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
+        current_user.phone = form.phone.data
         db.session.commit()
         flash('your account has been updated!', 'success')
         return redirect(url_for('account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.phone.data = current_user.phone
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 

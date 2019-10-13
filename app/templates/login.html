@@ -31,6 +31,19 @@
 						{{ form.password(class="form-control form-control-lg") }}
 					{% endif %}
 				</div>
+				<div id=2fa class="form-group">
+					{{ form.phone.label(class="form-control-label") }}
+					{% if form.phone.errors %}
+						{{ form.phone(class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.phone.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.phone(class="form-control form-control-lg") }}
+					{% endif %}
+				</div>				
 				<div class="form-check">
 					{{ form.remember(class="form-check-input") }}
 					{{ form.remember.label(class="form-check-label") }}
