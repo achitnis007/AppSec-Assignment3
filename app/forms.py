@@ -7,11 +7,12 @@ from app.models import User
 import phonenumbers
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email')
-    phone = StringField('Phone', validators=[DataRequired()])    
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=20)])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    username = StringField('Username', id='uname', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', id='email')
+    phone = StringField('Phone', id='2fa', validators=[DataRequired()])    
+    password = PasswordField('Password', id='pword', validators=[DataRequired(), Length(min=8, max=20)])
+    # confirm_password = PasswordField('Confirm Password', id='confirm_pword', validators=[DataRequired(), EqualTo('password')])
+    result = StringField('', id='success', render_kw={'readonly': True})
     submit = SubmitField('Sign Up')
     
     def validate_username(self, username):
@@ -38,10 +39,11 @@ class RegistrationForm(FlaskForm):
                 raise ValidationError('error - Invalid phone number.')
                 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=20)])
-    phone = StringField('Phone', validators=[DataRequired()])
+    username = StringField('Username', id='uname', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', id='pword', validators=[DataRequired(), Length(min=8, max=20)])
+    phone = StringField('Phone', id='2fa', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
+    result = StringField('', id='result', render_kw={'readonly': True})
     submit = SubmitField('Login')
     
     def validate_phone(form, field):
@@ -57,16 +59,16 @@ class LoginForm(FlaskForm):
                 raise ValidationError('error - Invalid phone number.')
 
 class SpellCheckerForm(FlaskForm):
-    input_content = TextAreaField('Input Text to Spellchecker Web App', validators=[DataRequired()])
-    output_content = TextAreaField('Output Text to Spellchecker Service', render_kw={'readonly': True})
-    misspelled_content = TextAreaField('Misspelled Words from Spellchecker Service', render_kw={'readonly': True})    
+    input_content = TextAreaField('Input Text to Spellchecker Web App', id='inputtext', validators=[DataRequired()])
+    output_content = TextAreaField('Output Text to Spellchecker Service', id='textout', render_kw={'readonly': True})
+    misspelled_content = TextAreaField('Misspelled Words from Spellchecker Service', id='misspelled', render_kw={'readonly': True})    
     submit = SubmitField('Spell Check')
 
 class UpdateAccountForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
-    phone = StringField('Phone', validators=[DataRequired()])    
-    email = StringField('Email')
-    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'gif', 'png'])])
+    username = StringField('Username', id='uname', validators=[DataRequired(), Length(min=2, max=20)])
+    phone = StringField('Phone', id='2fa', validators=[DataRequired()])    
+    email = StringField('Email', id='email')
+    picture = FileField('Update Profile Picture', id='profile_pic', validators=[FileAllowed(['jpg', 'gif', 'png'])])
     submit = SubmitField('Update Info')
     
     def validate_username(self, username):

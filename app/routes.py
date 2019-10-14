@@ -22,14 +22,17 @@ def register():
     if request.method == 'GET':
         return render_template('register.html', title='Register', form=form)
     if form.validate_on_submit():
+        form.result.data = ""
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, phone=form.phone.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
+        form.result.data = "success"
         flash(f'success - Your account has been created - please log in!', 'success')
-        return redirect(url_for('login'))
+        # return redirect(url_for('login'))
     else:
-        flash(f'failure - Acount Registrtion failed - please try again!', 'danger')
+        form.result.data = "failure"
+        flash(f'failure - Acount Registration failed - please try again!', 'danger')
     return render_template('register.html', title='Register', form=form)
     
 @app.route("/login", methods=['GET','POST'])
@@ -38,15 +41,19 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
+        form.result.data = ""
         user = User.query.filter_by(username=form.username.data).first()
         if not user or not bcrypt.check_password_hash(user.password, form.password.data):
-            flash('Incorrect - Login Unsuccessfull. Please check username and password', 'danger')
+            form.result.data = "Incorrect Two-factor failure"
+            flash('Two-factor failure - Login Unsuccessfull', 'danger')
         elif user.phone != form.phone.data:
-            flash('Two-factor failure - Login Unsuccessfull. Please check phone number', 'danger')
+            form.result.data = "Incorrect Two-factor failure"
+            flash('Two-factor failure - Login Unsuccessfull', 'danger')
         else:
+            form.result.data = "success."
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('spellcheck'))
+            # next_page = request.args.get('next')
+            # return redirect(next_page) if next_page else redirect(url_for('spellcheck'))
     return render_template('login.html', title='Login', form=form)
 
 @app.route("/logout")
@@ -91,9 +98,9 @@ def spellcheck():
     if form.validate_on_submit():
         input_text = form.input_content.data
         
-        spellcheck_file_path = os.path.join(app.root_path, 'spellcheck/a.out')
-        input_file_path = os.path.join(app.root_path, 'spellcheck/input.txt')
-        wordlist_file_path = os.path.join(app.root_path, 'spellcheck/wordlist.txt')
+        spellcheck_file_path = os.path.join(app.root_path, 'a.out')
+        input_file_path = os.path.join(app.root_path, 'spell_check/input.txt')
+        wordlist_file_path = os.path.join(app.root_path, 'spell_check/wordlist.txt')
         
         with open(input_file_path, 'w') as f:
             f.write(str(input_text))

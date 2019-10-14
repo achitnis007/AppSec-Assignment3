@@ -104,6 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # my appl files - not required to checkin
+a.out
 app/spellcheck/*
 spellcheck/
 *.BAK
