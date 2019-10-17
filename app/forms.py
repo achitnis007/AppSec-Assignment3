@@ -12,7 +12,7 @@ class RegistrationForm(FlaskForm):
     phone = StringField('Phone', id='2fa', validators=[DataRequired()])    
     password = PasswordField('Password', id='pword', validators=[DataRequired(), Length(min=8, max=20)])
     # confirm_password = PasswordField('Confirm Password', id='confirm_pword', validators=[DataRequired(), EqualTo('password')])
-    result = StringField('', id='success', render_kw={'readonly': True})
+    # result = StringField('', id='success', render_kw={'readonly': True})
     submit = SubmitField('Sign Up')
     
     def validate_username(self, username):
@@ -43,7 +43,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', id='pword', validators=[DataRequired(), Length(min=8, max=20)])
     phone = StringField('Phone', id='2fa', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
-    result = StringField('', id='result', render_kw={'readonly': True})
+    # result = StringField('', id='result', render_kw={'readonly': True})
     submit = SubmitField('Login')
     
     def validate_phone(form, field):

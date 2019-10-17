@@ -25,18 +25,18 @@ def register():
     if request.method == 'GET':
         return render_template('register.html', title='Register', form=form)
     if form.validate_on_submit():
-        form.result.data = ""
+        # form.result.data = ""
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         # user = User(username=form.username.data, phone=form.phone.data, email=form.email.data, password=hashed_password)
         user = User(username=form.username.data, phone=form.phone.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        form.result.data = "success"
+        # form.result.data = "success"
         result_str = "success"
         flash(f'success - Your account has been created - please log in!', 'success')
         # return redirect(url_for('login'))
     else:
-        form.result.data = "failure"
+        # form.result.data = "failure"
         result_str = "failure"        
         flash(f'failure - Acount Registration failed - please try again!', 'danger')
     return render_template('register.html', title='Register', form=form, result_str=result_str)
@@ -48,18 +48,18 @@ def login():
     result_str = " "
     form = LoginForm()
     if form.validate_on_submit():
-        form.result.data = ""
+        # form.result.data = ""
         user = User.query.filter_by(username=form.username.data).first()
         if not user or not bcrypt.check_password_hash(user.password, form.password.data):
-            form.result.data = "Incorrect Two-factor failure"
+            # form.result.data = "Incorrect Two-factor failure"
             result_str = "Incorrect Two-factor failure"
             flash('Two-factor failure - Login Unsuccessfull', 'danger')
         elif user.phone != form.phone.data:
-            form.result.data = "Incorrect Two-factor failure"
+            # form.result.data = "Incorrect Two-factor failure"
             result_str = "Incorrect Two-factor failure"
             flash('Two-factor failure - Login Unsuccessfull', 'danger')
         else:
-            form.result.data = "success."
+            # form.result.data = "success."
             result_str = "success."
             login_user(user, remember=form.remember.data)
             # next_page = request.args.get('next')
