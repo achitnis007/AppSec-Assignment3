@@ -23,7 +23,7 @@ def register():
     result_str = " "
     form = RegistrationForm()
     if request.method == 'GET':
-        return render_template('register.html', title='Register', form=form)
+        return render_template('register.html', title='Register', form=form, result_str=result_str)
     if form.validate_on_submit():
         # form.result.data = ""
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
