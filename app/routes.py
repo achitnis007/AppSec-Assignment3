@@ -16,8 +16,8 @@ def home():
 
 @app.route("/register", methods=['GET','POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
+    # if current_user.is_authenticated:
+        # return redirect(url_for('home'))
     result_str = " "
     form = RegistrationForm()
     if request.method == 'GET':
@@ -40,8 +40,8 @@ def register():
     
 @app.route("/login", methods=['GET','POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
+    # if current_user.is_authenticated:
+        # return redirect(url_for('home'))
     result_str = " "
     form = LoginForm()
     if form.validate_on_submit():
