@@ -16,6 +16,7 @@ db.init_app(app)
 
 from app import db
 
+# moved to app.py - unable to create db file if run from here
 # db.create_all()
 
 bcrypt = Bcrypt(app)

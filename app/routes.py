@@ -105,7 +105,8 @@ def spellcheck():
     if form.validate_on_submit():
         input_text = form.input_content.data
         
-        spellcheck_file_path = os.path.join(app.root_path, 'a.out')
+        # spellcheck_file_path = os.path.join(app.root_path, 'a.out')
+        spellcheck_file_path = './a.out'
         input_file_path = os.path.join(app.root_path, 'spell_check/input.txt')
         wordlist_file_path = os.path.join(app.root_path, 'spell_check/wordlist.txt')
         
