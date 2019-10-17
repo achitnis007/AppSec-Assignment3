@@ -1,6 +1,6 @@
 import pytest
 import requests
-import BeautifulSoup from bs4
+from bs4 import BeautifulSoup
 
 server_addr = "http://127.0.0.1:5000"
 server_login = server_addr + "/login"
