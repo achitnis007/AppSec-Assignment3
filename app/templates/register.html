@@ -73,8 +73,9 @@
 			</fieldset>
 			<div class="form-group">
 				{{ form.submit(class="btn btn-outline-info") }}
-				<small class="text-muted">{{ form.result }}</small>
+				<small class="text-muted">{{ form.result(class="form-control") }}</small>
 			</div>
+			<p id="success">{{ result_str }}</p>
 		</form>
 	</div>
 	<div class="border-top pt-3">

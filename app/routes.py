@@ -18,6 +18,7 @@ def home():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+    result_str = " "
     form = RegistrationForm()
     if request.method == 'GET':
         return render_template('register.html', title='Register', form=form)
@@ -28,33 +29,39 @@ def register():
         db.session.add(user)
         db.session.commit()
         form.result.data = "success"
+        result_str = "success"
         flash(f'success - Your account has been created - please log in!', 'success')
         # return redirect(url_for('login'))
     else:
         form.result.data = "failure"
+        result_str = "failure"        
         flash(f'failure - Acount Registration failed - please try again!', 'danger')
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Register', form=form, result_str=result_str)
     
 @app.route("/login", methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+    result_str = " "
     form = LoginForm()
     if form.validate_on_submit():
         form.result.data = ""
         user = User.query.filter_by(username=form.username.data).first()
         if not user or not bcrypt.check_password_hash(user.password, form.password.data):
             form.result.data = "Incorrect Two-factor failure"
+            result_str = "Incorrect Two-factor failure"
             flash('Two-factor failure - Login Unsuccessfull', 'danger')
         elif user.phone != form.phone.data:
             form.result.data = "Incorrect Two-factor failure"
+            result_str = "Incorrect Two-factor failure"
             flash('Two-factor failure - Login Unsuccessfull', 'danger')
         else:
             form.result.data = "success."
+            result_str = "success."
             login_user(user, remember=form.remember.data)
             # next_page = request.args.get('next')
             # return redirect(next_page) if next_page else redirect(url_for('spellcheck'))
-    return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form, result_str=result_str)
 
 @app.route("/logout")
 def logout():
