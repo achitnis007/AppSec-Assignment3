@@ -3,8 +3,10 @@ import subprocess
 import secrets
 from flask import render_template, url_for, flash, redirect, request
 from app import app, db, bcrypt
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, SpellCheckerForm
-from app.models import User, SpellChecker
+# from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, SpellCheckerForm
+from app.forms import RegistrationForm, LoginForm, SpellCheckerForm
+# from app.models import User, SpellChecker
+from app.models import User
 from flask_login import login_user, current_user, logout_user, login_required
 
     
@@ -25,7 +27,8 @@ def register():
     if form.validate_on_submit():
         form.result.data = ""
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, phone=form.phone.data, email=form.email.data, password=hashed_password)
+        # user = User(username=form.username.data, phone=form.phone.data, email=form.email.data, password=hashed_password)
+        user = User(username=form.username.data, phone=form.phone.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         form.result.data = "success"
@@ -69,34 +72,34 @@ def logout():
     return redirect(url_for('home'))
 
 
-def save_picture(form_picture):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
-    form_picture.save(picture_path)
-    return picture_fn
+# def save_picture(form_picture):
+    # random_hex = secrets.token_hex(8)
+    # _, f_ext = os.path.splitext(form_picture.filename)
+    # picture_fn = random_hex + f_ext
+    # picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+    # form_picture.save(picture_path)
+    # return picture_fn
     
-@app.route("/account", methods=['GET','POST'])
-@login_required
-def account():
-    form = UpdateAccountForm()
-    if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        current_user.phone = form.phone.data
-        db.session.commit()
-        flash('your account has been updated!', 'success')
-        return redirect(url_for('account'))
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.email.data = current_user.email
-        form.phone.data = current_user.phone
-    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    return render_template('account.html', title='Account', image_file=image_file, form=form)
+# @app.route("/account", methods=['GET','POST'])
+# @login_required
+# def account():
+    # form = UpdateAccountForm()
+    # if form.validate_on_submit():
+        # if form.picture.data:
+            # picture_file = save_picture(form.picture.data)
+            # current_user.image_file = picture_file
+        # current_user.username = form.username.data
+        # current_user.email = form.email.data
+        # current_user.phone = form.phone.data
+        # db.session.commit()
+        # flash('your account has been updated!', 'success')
+        # return redirect(url_for('account'))
+    # elif request.method == 'GET':
+        # form.username.data = current_user.username
+        # form.email.data = current_user.email
+        # form.phone.data = current_user.phone
+    # image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    # return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 @app.route("/spell_check", methods=['GET','POST'])
 @login_required
