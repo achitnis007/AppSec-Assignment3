@@ -8,6 +8,7 @@ name = "app"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ede0f7573b2079e2c4ebbe71537ca81b'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 
