@@ -30,28 +30,32 @@ def getElementById(text, eid):
 def test_server_is_alive():
     error = 1
     result = "Test Case #1: Test if Flask server is running\n"
+    err_result = None
     try:
         resp = requests.get(server_addr)
         resp.raise_for_status()
     except HTTPError as http_err:
-        result = result + "HTTP error occurred\n"
+        err_result = err_result + "HTTP error occurred\n"
     except Exception as err:
-        result = result + "Other error occurred\n"
+        err_result = err_result + "Other error occurred\n"
     else:
         error = 0
-        result = "Success!!! - Server is running at: " + server_addr
-    # assert error == 0, result
+        result = result + "Success!!! - Server is running at: " + server_addr
+    # assert error == 0, err_result
     return result
 
-# def test_page_exists():
-    # error = 0
-    # result = "Test Case #2: Test if all pages can be accessed\n"
-    # PAGES = ["", "/login", "/register"]
-    # for page in PAGES:
-        # try:
-            # resp = requests.get(server_addr + page)
-        # except Exception as err:
-            # result = result + "Exception: Flask webserver is not running at: "+server_addr + "\n"
-        # else:
-           # result = result + 'Success!: ' + page + ' found'
-    # assert error == 1, result
+def test_page_exists():
+    error = 1
+    err_result = None
+    result = "Test Case #2: Test if all pages can be accessed\n"
+    PAGES = ["", "/login", "/register"]
+    for page in PAGES:
+        try:
+            resp = requests.get(server_addr + page)
+        except Exception as err:
+            err_result = err_result + "Exception: Flask webserver is not running at: "+server_addr + "\n"
+        else:
+            error = 0
+            result = result + "Success!: " + page + " found"
+    # assert error == 0, err_result
+    return result
