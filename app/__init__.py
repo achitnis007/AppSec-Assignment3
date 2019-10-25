@@ -26,6 +26,7 @@ Talisman(
             'cdnjs.cloudflare.com',
             'stackpath.bootstrapcdn.com'          
         ],
+        'Strict-Transport-Security': 'max-age=0; includeSubDomains'
     },
     content_security_policy_nonce_in=['script-src']
 )
