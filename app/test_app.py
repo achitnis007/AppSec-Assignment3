@@ -13,7 +13,7 @@ from functools import wraps
 def sslwrap(func):
     @wraps(func)
     def bar(*args, **kw):
-        kw['ssl_version'] = ssl.PROTOCOL_TLSv3
+        kw['ssl_version'] = ssl.PROTOCOL_TLSv1
         return func(*args, **kw)
     return bar
 
@@ -21,7 +21,7 @@ ssl.wrap_socket = sslwrap(ssl.wrap_socket)
 
 # ===== some globals used in this pytest suite to make things easier =========
 
-server_addr = "http://127.0.0.1:5000"
+server_addr = "https://127.0.0.1:5000"
 login_url = server_addr + "/login"
 register_url = server_addr + "/register"
 spellcheck_url = server_addr + "/spell_check"
