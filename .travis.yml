@@ -1,8 +1,8 @@
 before_install:
   - sudo apt-get update
 install:
-  - pip3 install tox-travis codecov
-  - pip3 install -r requirements.txt
+  - pip install tox-travis codecov  # was pip3 earlier - changing to pip for 2.x
+  - pip install -r requirements.txt # was pip3 earlier - changing to pip for 2.x
 language:
   - python
 python:

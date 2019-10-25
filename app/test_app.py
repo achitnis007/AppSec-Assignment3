@@ -13,7 +13,7 @@ from functools import wraps
 def sslwrap(func):
     @wraps(func)
     def bar(*args, **kw):
-        kw['ssl_version'] = ssl.PROTOCOL_TLSv2
+        kw['ssl_version'] = ssl.PROTOCOL_TLSv3
         return func(*args, **kw)
     return bar
 
