@@ -10,12 +10,15 @@ import ssl
 from functools import wraps
 
 # == monkey-patch ssl.wrap_socket() in the ssl module by overriding the ssl_version keyword parameter ==
+
 # def sslwrap(func):
     # @wraps(func)
     # def bar(*args, **kw):
         # kw['ssl_version'] = ssl.PROTOCOL_TLSv1
         # return func(*args, **kw)
     # return bar
+=======
+
 
 # ssl.wrap_socket = sslwrap(ssl.wrap_socket)
 
