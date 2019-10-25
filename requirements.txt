@@ -19,7 +19,9 @@ filelock==3.0.12
 Flask==1.1.1
 Flask-Bcrypt==0.7.1
 Flask-Login==0.4.1
+Flask-SeaSurf==0.2.2
 Flask-SQLAlchemy==2.4.1
+flask-talisman==0.7.0
 Flask-WTF==0.14.2
 future==0.18.1
 html5lib==1.0.1
