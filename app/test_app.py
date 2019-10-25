@@ -9,7 +9,7 @@ import random
 
 # ===== some globals used in this pytest suite to make things easier =========
 
-server_addr = "http://127.0.0.1:5000"
+server_addr = "https://127.0.0.1:5000"
 login_url = server_addr + "/login"
 register_url = server_addr + "/register"
 spellcheck_url = server_addr + "/spell_check"
