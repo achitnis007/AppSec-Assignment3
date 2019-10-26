@@ -11,5 +11,5 @@ python:
   - "3.5"
   - "2.7"
 script:
-  - flask run &
+  - flask run --cert=adhoc &
   - tox

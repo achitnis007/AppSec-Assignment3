@@ -17,10 +17,20 @@ from functools import wraps
         # kw['ssl_version'] = ssl.PROTOCOL_TLSv1
         # return func(*args, **kw)
     # return bar
-=======
-
 
 # ssl.wrap_socket = sslwrap(ssl.wrap_socket)
+# =======
+
+# ===== Handle target environment that doesn't support HTTPS verification =====
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    # Legacy Python that doesn't verify HTTPS certificates by default
+    pass
+else:
+    # Handle target environment that doesn't support HTTPS verification
+    ssl._create_default_https_context = _create_unverified_https_context
+
 
 # ===== some globals used in this pytest suite to make things easier =========
 
@@ -46,6 +56,8 @@ def register(user, pwd, two_fa):
     br.set_debug_http(False)
     br.set_handle_refresh(False)
     br.set_handle_robots(False)
+
+#   br.set_ca_data(context=ssl._create_unverified_context(cert_reqs=ssl.CERT_NONE))
 
     cj = http.cookiejar.CookieJar()
     br.set_cookiejar(cj)
@@ -238,7 +250,7 @@ def test_server_is_alive():
     desc = "Test Case #1: test_server_is_alive() - Test if Flask server is running\n"
     err_result = result = ""
     try:
-        resp = requests.get(server_addr)
+        resp = requests.get(server_addr, verify=False)
         resp.raise_for_status()
     except HTTPError as http_err:
         error = True
@@ -261,7 +273,7 @@ def test_valid_prelogin_pages():
     PAGES = ["/", "/home", "/login", "/register"]
     for page in PAGES:
         try:
-            resp = requests.get(server_addr + page)
+            resp = requests.get(server_addr + page, verify=False)
         except Exception as err:
             error = True        
             err_result += "Error accessing pre-login page: " + page + "\n"
@@ -281,7 +293,7 @@ def test_invalid_prelogin_page_redirects():
     # /logout => /home & /spell_check => /login
         
     try:
-        resp = requests.get(server_addr + "/logout")
+        resp = requests.get(server_addr + "/logout", verify=False)
     except Exception as err:
         error = True
         err_result += "Error! Not directed to /home or server is down\n"
@@ -295,7 +307,7 @@ def test_invalid_prelogin_page_redirects():
             err_result += "Error! Not directed to /home\n"            
         
     try:
-        resp = requests.get(server_addr + "/spell_check")
+        resp = requests.get(server_addr + "/spell_check", verify=False)
     except Exception as err:
         error = True
         err_result += "Error! Not directed to /login or server is down\n"
