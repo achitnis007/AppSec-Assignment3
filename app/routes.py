@@ -121,6 +121,7 @@ def spellcheck():
 
         form.input_content.data = input_text
         form.output_content.data = input_text        
-        misspelled_words = subprocess.run([spellcheck_file_path, input_file_path, wordlist_file_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
+#       misspelled_words = subprocess.run([spellcheck_file_path, input_file_path, wordlist_file_path], stdout=subprocess.PIPE).stdout.decode('utf-8')
+        misspelled_words = subprocess.check_output([spellcheck_file_path, input_file_path, wordlist_file_path], stderr=subprocess.STDOUT).decode('utf-8')
         form.misspelled_content.data = misspelled_words.replace("\n", ", ").strip()[:-1]
     return render_template('spellcheck.html', form=form)
