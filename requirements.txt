@@ -47,7 +47,6 @@ pyOpenSSL==19.0.0
 pyparsing==2.4.2
 pyquery==1.4.0
 pytest==4.6.6
-python2-secrets==1.0.5
 python-dateutil==2.8.0
 requests==2.22.0
 six==1.12.0
