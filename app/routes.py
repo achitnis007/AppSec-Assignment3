@@ -33,12 +33,12 @@ def register():
         db.session.commit()
         # form.result.data = "success"
         result_str = "success"
-        flash(f'success - Your account has been created - please log in!', 'success')
+        flash('success - Your account has been created - please log in!', 'success')
         # return redirect(url_for('login'))
     else:
         # form.result.data = "failure"
         result_str = "failure"        
-        flash(f'failure - Acount Registration failed - please try again!', 'danger')
+        flash('failure - Acount Registration failed - please try again!', 'danger')
     return render_template('register.html', title='Register', form=form, result_str=result_str)
     
 @app.route("/login", methods=['GET','POST'])
