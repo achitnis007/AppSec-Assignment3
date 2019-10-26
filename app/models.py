@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         # return f"User('{self.username}', '{self.phone}', '{self.email}', '{self.image_file}')"
-        return f"User('{self.username}', '{self.phone}')"
+        return "User('{self.username}', '{self.phone}')"
     
 # class SpellChecker(db.Model):
     # id = db.Column(db.Integer, primary_key=True)
