@@ -1,8 +1,9 @@
 from app import app
 from app import db
 
-db.create_all()
+# db.drop_all()
 
+db.create_all()
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc', debug=True)

@@ -1,5 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h3>Abhijit's Awesome Spell Checker</h3>
-    <p> Log in to enter a paragraph for spell checking</br>All misspelled words will be displayed</p>
+    <div class="col-md-108">
+        <div class="content-section">
+            <p> Please <a href="{{ url_for('login') }}">log in</a>
+                to access the truly amazing Spell Checker service.
+                <br><br><br>
+                Spell Checker lets you paste or type the text you'd like checked for typos .....
+                <br><br><br>
+                Lo & Behold - all MISSPELLED words appear automagically on the screen in under a second!!!
+            </p>
+        </div>
+    </div>
 {% endblock content %}

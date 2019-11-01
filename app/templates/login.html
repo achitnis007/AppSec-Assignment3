@@ -55,13 +55,8 @@
 			</div>
 			<p id="result">{{ result_str }}</p>
 			<small class="text-muted ml-2">
-				<a href="#">Forgot Password?</a>
+    			Don't Have an Account Yet? <a class="ml-2" href="{{ url_for('register') }}">Sign Up</a>
 			</small>
 		</form>
-	</div>
-	<div class="border-top pt-3">
-		<small class="text-muted">
-			Don't Have an Account Yet? <a class="ml-2" href="{{ url_for('register') }}">Sign Up</a>
-		</small>
 	</div>
 {% endblock content %}

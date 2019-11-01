@@ -1,33 +1,46 @@
-from datetime import datetime
 from app import db, login_manager
 from flask_login import UserMixin
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+from datetime import datetime
 
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), unique=True, nullable=False)
-    # email = db.Column(db.String(120), unique=False, nullable=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(25), unique=True, nullable=False)
+    password = db.Column(db.String(64), nullable=False)
     phone = db.Column(db.String(16), unique=False, nullable=False)
-    # image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
-    password = db.Column(db.String(60), nullable=False)
-    # inputs = db.relationship('SpellChecker', backref='author', lazy=True)
-    
+    # salt = db.Column(String(16), nullable=False)
+    service_history_records = db.relationship("UserServiceHistory", backref="user")
+    login_history_records = db.relationship("UserLoginHistory", backref="'user")
+
     def __repr__(self):
-        # return f"User('{self.username}', '{self.phone}', '{self.email}', '{self.image_file}')"
         return "User('{self.username}', '{self.phone}')"
-    
-# class SpellChecker(db.Model):
-    # id = db.Column(db.Integer, primary_key=True)
-    # date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    # input_content = db.Column(db.Text, nullable=False)
-    # misspelled_content = db.Column(db.Text, nullable=True)
-    # user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
-    # def __repr__(self):
-        # return f"SpellChecker('{self.title}', '{self.date_posted}')"
+
+
+class UserLoginHistory(db.Model):
+    __tablename__ = 'user_login_history'
+    id =  db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    time_login = db.Column(db.DateTime, nullable=False)
+    time_logout = db.Column(db.DateTime, nullable=True)
+    # user_record = db.relationship('User', backpopulates='user_login_history', lazy=True)
+
+    def __repr__(self):
+        return "UserLoginHistory('{self.id}', '{self.user_id}', '{self.time_login}', '{self.time_logout}')"
+
+
+class UserServiceHistory(db.Model):
+    __tablename__ = 'user_service_history'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    input_content = db.Column(db.Text, nullable=False)
+    misspelled_content = db.Column(db.Text, nullable=True)
+    # user_record = db.relationship('User', backpopulates='user_service_history', lazy=True)
+
+    def __repr__(self):
+        return "UserServiceHistory('{self.id}', '{self.user_id}', '{self.date_posted}', '{self.input_content}', '{self.misspelled_content}')"
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

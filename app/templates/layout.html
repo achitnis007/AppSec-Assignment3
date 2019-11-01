@@ -17,33 +17,37 @@
         {% endif %}
 </head>
 <body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-            <div class="container">
-	      <a class="navbar-brand mr-4" href="/">Abhijit's Spell Checker Service</a>
-	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-	        <span class="navbar-toggler-icon"></span>
-	      </button>
-	      <div class="collapse navbar-collapse" id="navbarToggle">
-	        <div class="navbar-nav mr-auto">
-	          <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-	        </div>
-	        <!-- Navbar Right Side -->
-	        <div class="navbar-nav">
-			  {% if current_user.is_authenticated %}
-				<a class="nav-item nav-link" href="{{ url_for('spellcheck') }}">Spell Checker</a>
-				<!-- a class="nav-item nav-link" href="{# { url_for('account') } #}">Account</a -->
-				<a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-			  {% else %}
-				<a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-				<a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
-			  {% endif %}
-	        </div>
-	      </div>
-	    </div>
-	  </nav>
-    </header
-    <main role="main" class="container">
+<header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+            <a class="navbar-brand mr-4" href="/">Abhijit's Spell Checker Service</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if (current_user.is_authenticated == True) %}
+                        <a class="nav-item nav-link" href="{{ url_for('spellcheck') }}">Spell Checker</a>
+                        <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <br>
+                        User: {{ current_user.username }} Phone: {{ current_user.phone }} id: {{ current_user.id }}
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                        <br>
+                        User: Not Logged In Phone: N/A id: N/A
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<main role="main" class="container">
 		<div class="row">
 			<div class="col-md-8">
 				{% with messages = get_flashed_messages(with_categories=true)%}
