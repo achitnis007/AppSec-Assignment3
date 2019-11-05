@@ -246,7 +246,7 @@ def historyforadmin(user_clicked):
     except:
         return redirect(url_for('home'))
 
-@app.route("/login_history", defaults={'user_clicked': None}, methods=['GET','POST'])
+@app.route("/login_history/", defaults={'user_clicked': None}, methods=['GET','POST'])
 @app.route("/login_history/<user_clicked>", methods=['GET','POST'])
 @login_required
 def loginhistory(user_clicked):
