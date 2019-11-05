@@ -11,7 +11,7 @@ setuptools.setup(
     description="A small flask - sqlite web app to call a spell-check service",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/achitnis007/AppSec-Assignment2",
+    url="https://github.com/achitnis007/AppSec-Assignment3",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
