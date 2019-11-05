@@ -245,3 +245,53 @@ def historyforadmin(user_clicked):
             return render_template('history.html', title='History', form=form, service_records_cnt=service_records_cnt, service_records=service_records)
     except:
         return redirect(url_for('home'))
+
+@app.route("/login_history", defaults={'user_clicked': None}, methods=['GET','POST'])
+@app.route("/login_history/<user_clicked>", methods=['GET','POST'])
+@login_required
+def loginhistory(user_clicked):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+
+    if not (current_user.username == 'admin'):
+        return redirect(url_for('home'))
+
+    try:
+        form = HistoryForm()
+        if request.method == 'GET':
+            if not user_clicked:
+                user_name = current_user.username
+            else:
+                user_name = user_clicked
+            user = User.query.filter(User.username == user_name).first()
+            activity_records_cnt = UserLoginHistory.query.filter(UserLoginHistory.user_id == user.id).count()
+            activity_records = UserLoginHistory.query.with_entities(UserLoginHistory.id, User.username,
+                                                                     UserLoginHistory.time_login,
+                                                                     UserLoginHistory.time_logout). \
+                                                    join(User, User.id == UserLoginHistory.user_id). \
+                                                    filter(UserLoginHistory.user_id == user.id). \
+                                                    order_by(UserLoginHistory.id.asc()).all()
+            return render_template('activitylog.html', title='LoginHistory', form=form,
+                                   activity_records_cnt=activity_records_cnt, activity_records=activity_records)
+
+        if form.validate_on_submit():
+            if form.username.data == '*':
+                activity_records_cnt = UserLoginHistory.query.count()
+                activity_records = UserLoginHistory.query.with_entities(UserLoginHistory.id, User.username,
+                                                                         UserLoginHistory.time_login,
+                                                                         UserLoginHistory.time_logout). \
+                                                        join(User, User.id == UserLoginHistory.user_id). \
+                                                        order_by(UserLoginHistory.id.asc()).all()
+            else:
+                user = User.query.filter(User.username == form.username.data).first()
+                activity_records_cnt = UserLoginHistory.query.filter(UserLoginHistory.user_id == user.id).count()
+                activity_records = UserLoginHistory.query.with_entities(UserLoginHistory.id, User.username,
+                                                                        UserLoginHistory.time_login,
+                                                                        UserLoginHistory.time_logout). \
+                                                        join(User, User.id == UserLoginHistory.user_id). \
+                                                        filter(UserLoginHistory.user_id == user.id). \
+                                                        order_by(UserLoginHistory.id.asc()).all()
+            return render_template('activitylog.html', title='LoginHistory', form=form,
+                                   activity_records_cnt=activity_records_cnt, activity_records=activity_records)
+    except:
+        return redirect(url_for('home'))

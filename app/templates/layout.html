@@ -34,14 +34,17 @@
                 <div class="navbar-nav">
                     {% if (current_user.is_authenticated == True) %}
                         <a class="nav-item nav-link" href="{{ url_for('spellcheck') }}">Spell Checker</a>
-                        <a class="nav-item nav-link" href="{{ url_for('history') }}">History</a>
+                        <a class="nav-item nav-link" href="{{ url_for('history') }}">Query History</a>
+                        {% if (current_user.username == 'admin') %}
+                            <a class="nav-item nav-link" href="{{ url_for('loginhistory', user_clicked=current_user.username) }}">User Activity</a>
+                        {% endif %}
                         <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                     {% else %}
                         <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                     {% endif %}
                 </div>
                 <small>
-                    [User: {{ current_user.username }} - ID: {{ current_user.id }} - Phone: {{ current_user.phone }}]
+                    [User: {{ current_user.username }}]
                 </small>
             </div>
         </div>
