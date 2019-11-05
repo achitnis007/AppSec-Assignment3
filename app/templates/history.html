@@ -20,7 +20,8 @@
                         {% if (service_records_cnt > 0) %}
                           <tbody>
                           {% for sr in service_records %}
-                            <tr id="query{{ sr.id }}">
+                            {# <!-- tr id="query{{ sr.id }}" --> #}
+                              <tr id="{{ sr.id }}">
                               <th scope="row">{{ sr.id }}</th>
                               <td><a href="{{ url_for('historyforadmin', user_clicked=sr.username) }}">{{ sr.username }}</a></td>
                               <td><a href="{{ url_for('reviewquery', querynum='query' + sr.id|string) }}">{{ sr.input_content }}</a></td>
