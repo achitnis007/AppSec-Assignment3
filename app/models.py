@@ -33,7 +33,7 @@ class UserServiceHistory(db.Model):
     __tablename__ = 'user_service_history'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.now)
     input_content = db.Column(db.Text, nullable=False)
     misspelled_content = db.Column(db.Text, nullable=True)
     # user_record = db.relationship('User', backpopulates='user_service_history', lazy=True)

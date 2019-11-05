@@ -28,21 +28,21 @@
             <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+                    <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if (current_user.is_authenticated == True) %}
                         <a class="nav-item nav-link" href="{{ url_for('spellcheck') }}">Spell Checker</a>
+                        <a class="nav-item nav-link" href="{{ url_for('history') }}">History</a>
                         <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-                        <br>
-                        User: {{ current_user.username }} Phone: {{ current_user.phone }} id: {{ current_user.id }}
                     {% else %}
                         <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                        <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
-                        <br>
-                        User: Not Logged In Phone: N/A id: N/A
                     {% endif %}
                 </div>
+                <small>
+                    [User: {{ current_user.username }} - ID: {{ current_user.id }} - Phone: {{ current_user.phone }}]
+                </small>
             </div>
         </div>
     </nav>
