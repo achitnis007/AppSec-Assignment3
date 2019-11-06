@@ -34,7 +34,7 @@
                 <div class="navbar-nav">
                     {% if (current_user.is_authenticated == True) %}
                         <a class="nav-item nav-link" href="{{ url_for('spellcheck') }}">Spell Checker</a>
-                        <a class="nav-item nav-link" href="{{ url_for('history') }}">Query History</a>
+                        <a class="nav-item nav-link" href="{{ url_for('historyfor', user_clicked=current_user.username) }}">Query History</a>
                         {% if (current_user.username == 'admin') %}
                             <a class="nav-item nav-link" href="{{ url_for('loginhistory', user_clicked=current_user.username) }}">User Activity</a>
                         {% endif %}

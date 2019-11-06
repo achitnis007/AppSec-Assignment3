@@ -113,44 +113,6 @@ def spellcheck():
 
     return render_template('spellcheck.html', form=form)
 
-@app.route("/history", methods=['GET','POST'])
-@login_required
-def history():
-    if (not current_user.is_authenticated):
-        return redirect(url_for('login'))
-    try:
-        service_records_cnt = UserServiceHistory.query.filter(UserServiceHistory.user_id == current_user.id).count()
-        service_records = UserServiceHistory.query.with_entities(UserServiceHistory.id, User.username, UserServiceHistory.input_content, UserServiceHistory.date_posted).\
-                                join(User, User.id == UserServiceHistory.user_id).\
-                                filter(UserServiceHistory.user_id == current_user.id).\
-                                order_by(UserServiceHistory.date_posted.asc()).all()
-    except:
-        return redirect(url_for('home'))
-    form = HistoryForm()
-    if request.method == 'GET':
-        return render_template('history.html', title='History', form=form, service_records_cnt=service_records_cnt, service_records=service_records)
-
-    if form.validate_on_submit():
-        if form.username.data == '*':
-            service_records_cnt = UserServiceHistory.query.count()
-            service_records = UserServiceHistory.query.with_entities(UserServiceHistory.id, User.username,
-                                                                     UserServiceHistory.input_content,
-                                                                     UserServiceHistory.date_posted). \
-                                                    join(User, User.id == UserServiceHistory.user_id). \
-                                                    order_by(UserServiceHistory.date_posted.asc()).all()
-        else:
-            user = User.query.filter(User.username == form.username.data).first()
-            service_records_cnt = UserServiceHistory.query.filter(UserServiceHistory.user_id == user.id).count()
-            service_records = UserServiceHistory.query.with_entities(UserServiceHistory.id, User.username,
-                                                                     UserServiceHistory.input_content,
-                                                                     UserServiceHistory.date_posted). \
-                                                    join(User, User.id == UserServiceHistory.user_id). \
-                                                    filter(UserServiceHistory.user_id == user.id). \
-                                                    order_by(UserServiceHistory.date_posted.asc()).all()
-        return render_template('history.html', title='History', form=form, service_records_cnt=service_records_cnt, service_records=service_records)
-
-    return redirect(url_for('history'))
-
 
 @app.route("/history/<querynum>", methods=['GET','POST'])
 @login_required
@@ -203,14 +165,17 @@ def reviewquery(querynum):
         return redirect(url_for('history'))
 
 
-@app.route("/historyforadmin/<user_clicked>", methods=['GET','POST'])
+@app.route('/historyfor/<user_clicked>', methods=['GET','POST'])
 @login_required
-def historyforadmin(user_clicked):
+def historyfor(user_clicked):
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
 
-    if not (current_user.username == 'admin'):
-        return redirect(url_for('history'))
+    if user_clicked and (user_clicked != current_user.username) and (current_user.username != 'admin'):
+        user_clicked = current_user.username
+
+    if (not user_clicked) or (user_clicked is None) or (user_clicked == 'None'):
+        user_clicked = current_user.username
 
     try:
         form = HistoryForm()
@@ -245,6 +210,45 @@ def historyforadmin(user_clicked):
             return render_template('history.html', title='History', form=form, service_records_cnt=service_records_cnt, service_records=service_records)
     except:
         return redirect(url_for('home'))
+
+@app.route('/history/', methods=['GET','POST'])
+@login_required
+def history():
+    if (not current_user.is_authenticated):
+        return redirect(url_for('login'))
+    try:
+        service_records_cnt = UserServiceHistory.query.filter(UserServiceHistory.user_id == current_user.id).count()
+        service_records = UserServiceHistory.query.with_entities(UserServiceHistory.id, User.username, UserServiceHistory.input_content, UserServiceHistory.date_posted).\
+                                join(User, User.id == UserServiceHistory.user_id).\
+                                filter(UserServiceHistory.user_id == current_user.id).\
+                                order_by(UserServiceHistory.date_posted.asc()).all()
+    except:
+        return redirect(url_for('home'))
+    form = HistoryForm()
+    if request.method == 'GET':
+        return render_template('history.html', title='History', form=form, service_records_cnt=service_records_cnt, service_records=service_records)
+
+    if form.validate_on_submit():
+        if form.username.data == '*':
+            service_records_cnt = UserServiceHistory.query.count()
+            service_records = UserServiceHistory.query.with_entities(UserServiceHistory.id, User.username,
+                                                                     UserServiceHistory.input_content,
+                                                                     UserServiceHistory.date_posted). \
+                                                    join(User, User.id == UserServiceHistory.user_id). \
+                                                    order_by(UserServiceHistory.date_posted.asc()).all()
+        else:
+            user = User.query.filter(User.username == form.username.data).first()
+            service_records_cnt = UserServiceHistory.query.filter(UserServiceHistory.user_id == user.id).count()
+            service_records = UserServiceHistory.query.with_entities(UserServiceHistory.id, User.username,
+                                                                     UserServiceHistory.input_content,
+                                                                     UserServiceHistory.date_posted). \
+                                                    join(User, User.id == UserServiceHistory.user_id). \
+                                                    filter(UserServiceHistory.user_id == user.id). \
+                                                    order_by(UserServiceHistory.date_posted.asc()).all()
+        return render_template('history.html', title='History', form=form, service_records_cnt=service_records_cnt, service_records=service_records)
+
+    return redirect(url_for('history'))
+
 
 @app.route("/login_history/", defaults={'user_clicked': None}, methods=['GET','POST'])
 @app.route("/login_history/<user_clicked>", methods=['GET','POST'])
