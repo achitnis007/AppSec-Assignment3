@@ -6,7 +6,15 @@
 
 			<fieldset class="form-group">
 				<legend class="border-bottom mb-4">Query Review</legend>
+                <ul>
                 <small class="form-control-label">
+                    <li id="queryid">Query ID : {{ queryid }}</li>
+                    <li id="username">Query Submitter : {{ username }}</li>
+                    <li id="querytext">Query Text : {{ querytext }}</li>
+                    <li id="queryresults">Query Results : {{ queryresults }}</li>
+                </small>
+                </ul>
+                 {#
                     <p id="queryid">Query ID : {{ queryid }}</p>
                     <p id="querydate">Query Date : {{ querydate }}</p>
                     <p id="username">Query Submitter : {{ username }}</p>
@@ -15,6 +23,7 @@
                     <p id="querytext">Query Text : {{ querytext }}</p>
                     <p id="queryresults">Query Results : {{ queryresults }}</p>
                 </div>
+                #}
             {#
 				<!-- div class="form-group">
 					{{ form.query_text.label(class="form-control-label") }}
