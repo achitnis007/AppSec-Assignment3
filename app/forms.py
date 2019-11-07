@@ -59,7 +59,8 @@ class QueryReviewForm(FlaskForm):
 
 
 class HistoryForm(FlaskForm):
-    username = StringField('User Name (Enter * to view complete history)', id='username', validators=[DataRequired()])
+    # username = StringField('User Name (Enter * to view complete history)', id='username', validators=[DataRequired()])
+    username = StringField('User Name (Enter * to view complete history)', id='userquery', validators=[DataRequired()])
     submit = SubmitField('Fetch History')
 
     def validate_username(self, username):

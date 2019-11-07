@@ -2,12 +2,13 @@
 {% block content %}
 	<!-- div class="content-section" -->
     <div class="container-section-query-list">
-		<form id='userquery' method="POST" action="">
+		<!-- form id='userquery' method="POST" action="" -->
+        <form method="POST" action="">
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
 				<legend class="border-bottom mb-4">Spell Checker Query History</legend>
                 <p id="numqueries">Query Count: {{ service_records_cnt }}</p>
-                    <div id=history>
+                    <div class="form-group">
                         {% if (service_records_cnt > 0) %}
                           <ul style="list-style-type:none;">
                           <li>Query ID&nbsp&nbsp&nbsp&nbsp&nbspUser Name&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspQuery Text</li>
@@ -24,7 +25,7 @@
                     </div>
                 {% endif %}
                 {%  if current_user.username == 'admin' %}
-                    <div id=username class="form-group">
+                    <div class="form-group">
                         {{ form.username.label(class="form-control-label") }}
                         {% if form.username.errors %}
                             {{ form.username(class="form-control form-control-lg is-invalid") }}
