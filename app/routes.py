@@ -211,7 +211,8 @@ def historyfor(user_clicked):
     except:
         return redirect(url_for('home'))
 
-@app.route('/history/', methods=['GET','POST'])
+@app.route("/history", methods=['GET','POST'])
+@app.route("/history/", methods=['GET','POST'])
 @login_required
 def history():
     if (not current_user.is_authenticated):
