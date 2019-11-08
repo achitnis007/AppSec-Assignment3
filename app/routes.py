@@ -82,7 +82,7 @@ def spellcheck():
     if form.validate_on_submit():
         input_text = form.input_content.data
 
-        if (os.getenv('OS')[:3] == "Win"):
+        if (str(os.getenv('OS'))[:3] == "Win"):
             spellcheck_file_path = os.path.join(app.root_path, 'spell_check\spell_check.exe')
             input_file_path = os.path.join(app.root_path, 'spell_check\input.txt')
             wordlist_file_path = os.path.join(app.root_path, 'spell_check\wordlist.txt')
@@ -101,7 +101,7 @@ def spellcheck():
         form.output_content.data = input_text
         misspelled_words = subprocess.check_output([spellcheck_file_path, input_file_path, wordlist_file_path], stderr=subprocess.STDOUT).decode('utf-8')
 
-        if (os.getenv('OS')[:3] == "Win"):
+        if (str(os.getenv('OS'))[:3] == "Win"):
             form.misspelled_content.data = misspelled_words.replace("\r", ", ").replace("\n", "").strip()[:-1]
         else:
             form.misspelled_content.data = misspelled_words.replace("\n", ", ").strip()[:-1]
