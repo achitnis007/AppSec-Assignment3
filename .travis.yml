@@ -6,10 +6,10 @@ install:
 language:
   - python
 python:
-#  - "3.7"
+  - "3.7"
   - "3.6"
-#  - "3.5"
-#  - "2.7"
+  - "3.5"
+  - "2.7"
 script:
   - flask run --cert=adhoc &
   - tox
