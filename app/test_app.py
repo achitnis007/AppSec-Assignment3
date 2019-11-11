@@ -255,6 +255,8 @@ def login_logout(user, pwd, two_fa):
 def user_query_history(user, pwd, two_fa, username):
 
     step = 0
+    login_hdr = selflink = userlink = ''
+
     br = mechanize.Browser()
     br.set_debug_http(False)
     br.set_handle_refresh(False)
@@ -299,7 +301,10 @@ def user_query_history(user, pwd, two_fa, username):
             response = br.open(history_url + '/' + username)
         else:
             response = br.open(history_url)
-        if response.code == 200:
+        if response.code != 200:
+            step = 4
+            result = 'failure''
+        else:
             response = response.read().decode('UTF-8')
             soup = BeautifulSoup(response, 'lxml')
             # print(soup.prettify())
@@ -333,9 +338,6 @@ def user_query_history(user, pwd, two_fa, username):
                         result = 'failure'
                     else:
                         result = 'success'
-        else:
-            step = 4
-            result = 'failure'
     else:
         step = 3
         result = 'failure'
