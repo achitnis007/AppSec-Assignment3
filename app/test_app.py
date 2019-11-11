@@ -345,7 +345,7 @@ def user_query_history(user, pwd, two_fa, username):
     br.close()
 
     if result == 'failure':
-        print("Failed Step # : <" + step + ">\n" +
+        print("Failed Step # : <" + str(step) + ">\n" +
               "Logged in as user: <" + user + "> ... checking Q hist for: <" + username +
               "> ... page header: <" + login_hdr + "> ...  selflink: <" + selflink +
               ">  ... userlink: <" + userlink + ">")
