@@ -294,7 +294,7 @@ def user_query_history(user, pwd, two_fa, username):
     soup = BeautifulSoup(resp, 'lxml')
     result = soup.find(id='result').text
 
-    # print(soup.prettify())
+    print(soup.prettify())
 
     if result == 'success.':
         if username != '':
