@@ -309,7 +309,7 @@ def user_query_history(user, pwd, two_fa, username):
         else:
             response = response.read().decode('UTF-8')
             soup = BeautifulSoup(response, 'lxml')
-            # print(soup.prettify())
+            print(soup.prettify())
             login_hdr = soup.legend.text
             selflink = soup.find("a", string=user)
             if selflink is None:
@@ -367,7 +367,7 @@ def user_login_history(user, pwd, two_fa, username):
 
     register('actester1', '1111111111', '1111111111')
     register('actester2', '2222222222', '2222222222')
-    
+
     cj = http.cookiejar.CookieJar()
     br.set_cookiejar(cj)
 
