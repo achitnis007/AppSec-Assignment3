@@ -86,7 +86,8 @@ def register(user, pwd, two_fa):
     soup = BeautifulSoup(resp, 'lxml')
     # print(soup.prettify())
     result = soup.find(id='success').text
-    
+
+    br.open(logout_url)
     br.close()
     return result
 

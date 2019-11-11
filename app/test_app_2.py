@@ -51,86 +51,86 @@ def getElementById(text, eid):
 	result = soup.find(id.eid)
 	return result
 
-# # ==========================================================================
-# def register(user, pwd, two_fa):
-#
-#     br = mechanize.Browser()
-#     br.set_debug_http(False)
-#     br.set_handle_refresh(False)
-#     br.set_handle_robots(False)
-#
-# #   br.set_ca_data(context=ssl._create_unverified_context(cert_reqs=ssl.CERT_NONE))
-#
-#     cj = http.cookiejar.CookieJar()
-#     br.set_cookiejar(cj)
-#
-#     br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
-#                      ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
-#                      ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
-#                      ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
-#                      ('Connection', 'keep-alive')
-#                     ]
-#     response = br.open(register_url)
-#     if response.code != 200:
-#         return 'failure'
-#
-#     br.select_form(nr = 0)
-#     br.form['username'] = user
-#     br.form['password'] = pwd
-#     br.form['phone'] = two_fa
-#     resp = br.submit()
-#     # print(resp)
-#     if resp.code != 200:
-#         return 'failure'
-#
-#     resp = resp.read().decode('UTF-8')
-#     soup = BeautifulSoup(resp, 'lxml')
-#     # print(soup.prettify())
-#     result = soup.find(id='success').text
-#
-#     br.close()
-#     return result
-#
-# # ==========================================================================
-# def login(user, pwd, two_fa):
-#
-#     br = mechanize.Browser()
-#     br.set_debug_http(False)
-#     br.set_handle_refresh(False)
-#     br.set_handle_robots(False)
-#
-#     cj = http.cookiejar.CookieJar()
-#     br.set_cookiejar(cj)
-#
-#     br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
-#                      ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
-#                      ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
-#                      ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
-#                      ('Connection', 'keep-alive')
-#                     ]
-#     response = br.open(login_url)
-#     if response.code != 200:
-#         return 'failure'
-#
-#     soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
-#     # print(soup.prettify())
-#
-#     br.select_form(nr = 0)
-#     br.form['username'] = user
-#     br.form['password'] = pwd
-#     br.form['phone'] = two_fa
-#     resp = br.submit()
-#     if resp.code != 200:
-#         return 'failure'
-#
-#     resp = resp.read().decode('UTF-8')
-#     soup = BeautifulSoup(resp, 'lxml')
-#     # print(soup.prettify())
-#     result = soup.find(id='result').text
-#
-#     br.close()
-#     return result
-#
+# ==========================================================================
+def register(user, pwd, two_fa):
+
+    br = mechanize.Browser()
+    br.set_debug_http(False)
+    br.set_handle_refresh(False)
+    br.set_handle_robots(False)
+
+#   br.set_ca_data(context=ssl._create_unverified_context(cert_reqs=ssl.CERT_NONE))
+
+    cj = http.cookiejar.CookieJar()
+    br.set_cookiejar(cj)
+
+    br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
+                     ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
+                     ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
+                     ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
+                     ('Connection', 'keep-alive')
+                    ]
+    response = br.open(register_url)
+    if response.code != 200:
+        return 'failure'
+
+    br.select_form(nr = 0)
+    br.form['username'] = user
+    br.form['password'] = pwd
+    br.form['phone'] = two_fa
+    resp = br.submit()
+    # print(resp)
+    if resp.code != 200:
+        return 'failure'
+
+    resp = resp.read().decode('UTF-8')
+    soup = BeautifulSoup(resp, 'lxml')
+    # print(soup.prettify())
+    result = soup.find(id='success').text
+
+    br.close()
+    return result
+
+# ==========================================================================
+def login(user, pwd, two_fa):
+
+    br = mechanize.Browser()
+    br.set_debug_http(False)
+    br.set_handle_refresh(False)
+    br.set_handle_robots(False)
+
+    cj = http.cookiejar.CookieJar()
+    br.set_cookiejar(cj)
+
+    br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
+                     ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
+                     ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
+                     ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
+                     ('Connection', 'keep-alive')
+                    ]
+    response = br.open(login_url)
+    if response.code != 200:
+        return 'failure'
+
+    soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
+    # print(soup.prettify())
+
+    br.select_form(nr = 0)
+    br.form['username'] = user
+    br.form['password'] = pwd
+    br.form['phone'] = two_fa
+    resp = br.submit()
+    if resp.code != 200:
+        return 'failure'
+
+    resp = resp.read().decode('UTF-8')
+    soup = BeautifulSoup(resp, 'lxml')
+    # print(soup.prettify())
+    result = soup.find(id='result').text
+
+    br.close()
+    return result
+
 # # ==========================================================================
 # def spellcheck(user, pwd, two_fa, words_to_check):
 #
@@ -256,6 +256,8 @@ def user_query_history(user, pwd, two_fa, username):
 
     step = 0
     login_hdr = selflink = userlink = ''
+    register('actester1', '1111111111', '1111111111')
+    register('actester2', '2222222222', '2222222222')
 
     br = mechanize.Browser()
     br.set_debug_http(False)
@@ -363,6 +365,9 @@ def user_login_history(user, pwd, two_fa, username):
     br.set_handle_refresh(False)
     br.set_handle_robots(False)
 
+    register('actester1', '1111111111', '1111111111')
+    register('actester2', '2222222222', '2222222222')
+    
     cj = http.cookiejar.CookieJar()
     br.set_cookiejar(cj)
 
