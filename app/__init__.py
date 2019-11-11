@@ -10,26 +10,26 @@ app = Flask(__name__)
 
 SELF = "'self'"
 
-# Talisman(
-#     app,
-#     content_security_policy={
-#         'default-src': SELF,
-#         'script-src': [
-#             SELF,
-#             'code.jquery.com',
-#             'cdnjs.cloudflare.com',
-#             'stackpath.bootstrapcdn.com'
-#         ],
-#         'style-src': [
-#             SELF,
-#             'code.jquery.com',
-#             'cdnjs.cloudflare.com',
-#             'stackpath.bootstrapcdn.com'
-#         ],
-#         'Strict-Transport-Security': 'max-age=0; includeSubDomains'
-#     },
-#     content_security_policy_nonce_in=['script-src']
-# )
+Talisman(
+    app,
+    content_security_policy={
+        'default-src': SELF,
+        'script-src': [
+            SELF,
+            'code.jquery.com',
+            'cdnjs.cloudflare.com',
+            'stackpath.bootstrapcdn.com'
+        ],
+        'style-src': [
+            SELF,
+            'code.jquery.com',
+            'cdnjs.cloudflare.com',
+            'stackpath.bootstrapcdn.com'
+        ],
+        'Strict-Transport-Security': 'max-age=0; includeSubDomains'
+    },
+    content_security_policy_nonce_in=['script-src']
+)
 
 app.config['SECRET_KEY'] = 'ede0f7573b2079e2c4ebbe71537ca81b'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'

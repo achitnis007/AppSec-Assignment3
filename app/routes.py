@@ -55,16 +55,16 @@ def login():
 def logout():
     if current_user.is_authenticated:
         try:
-            login_record = UserLoginHistory.query.filter(UserLoginHistory.user_id == current_user.id).\
+            login_records = UserLoginHistory.query.filter(UserLoginHistory.user_id == current_user.id).\
                                                   filter(UserLoginHistory.time_logout == None).\
-                                                  filter(UserLoginHistory.time_login < datetime.now()).first()
-            print(login_record)
+                                                  filter(UserLoginHistory.time_login < datetime.now()).all()
         except:
             return redirect(url_for('home'))
 
-        if not login_record is None:
-            login_record.time_logout = datetime.now()
-        db.session.commit()
+        if not login_records is None:
+            for login_record in login_records:
+                login_record.time_logout = datetime.now()
+            db.session.commit()
 
         user = current_user
         user.authenticated = False

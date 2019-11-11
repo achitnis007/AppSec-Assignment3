@@ -3,29 +3,36 @@
 	<!-- div class="content-section" -->
     <div class="container-section-query-list">
 		<form id='userquery' method="POST" action="">
-        <!-- form method="POST" action="" -->
 			{{ form.hidden_tag() }}
 			<fieldset class="form-group">
 				<legend class="border-bottom mb-4">Spell Checker Query History</legend>
                 <p id="numqueries">Query Count: {{ service_records_cnt }}</p>
-                    <div class="form-group">
+                    <div id=history>
+                        <table class="table table-hover">
+                          <thead>
+                            <tr>
+                              <th scope="col">Query ID</th>
+                              <th scope="col">User Name</th>
+                              <th scope="col">Input Content</th>
+                              <th scope="col">Date Posted</th>
+                            </tr>
+                          </thead>
                         {% if (service_records_cnt > 0) %}
-                          <ul style="list-style-type:none;">
-                          <li>Query ID&nbsp&nbsp&nbsp&nbsp&nbspUser Name&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspQuery Text</li>
+                          <tbody>
                           {% for sr in service_records %}
-                            <li id="query{{ sr.id }}">
-                              {{ sr.id }}
-                              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                              <a href="{{ url_for('historyfor', user_clicked=sr.username) }}">{{ sr.username }}</a>
-                              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                              <a href="{{ url_for('reviewquery', querynum='query' + sr.id|string) }}">{{ sr.input_content }}</a>
-                            </li>
+                            <tr id="query{{ sr.id }}">
+                              <th scope="row">{{ sr.id }}</th>
+                              <td><a href="{{ url_for('history', user_clicked=sr.username) }}">{{ sr.username }}</a></td>
+                              <td><a href="{{ url_for('reviewquery', querynum='query' + sr.id|string) }}">{{ sr.input_content }}</a></td>
+                              <td>{{ sr.date_posted }}</td>
+                            </tr>
                           {% endfor %}
-                          </ul>
+                          </tbody>
+                        </table>
                     </div>
                 {% endif %}
                 {%  if current_user.username == 'admin' %}
-                    <div class="form-group">
+                    <div id=username class="form-group">
                         {{ form.username.label(class="form-control-label") }}
                         {% if form.username.errors %}
                             {{ form.username(class="form-control form-control-lg is-invalid") }}
