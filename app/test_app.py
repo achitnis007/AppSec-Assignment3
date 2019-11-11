@@ -253,6 +253,8 @@ def login_logout(user, pwd, two_fa):
 
 # ==========================================================================
 def user_query_history(user, pwd, two_fa, username):
+
+    step = 0
     br = mechanize.Browser()
     br.set_debug_http(False)
     br.set_handle_refresh(False)
@@ -270,6 +272,7 @@ def user_query_history(user, pwd, two_fa, username):
                      ]
     response = br.open(login_url)
     if response.code != 200:
+        step = 1
         return 'failure'
 
     # soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
@@ -282,6 +285,7 @@ def user_query_history(user, pwd, two_fa, username):
     resp = br.submit()
     if resp.code != 200:
         br.close()
+        step = 2
         return 'failure'
 
     resp = resp.read().decode('UTF-8')
@@ -309,6 +313,7 @@ def user_query_history(user, pwd, two_fa, username):
                 if login_hdr == "Spell Checker Query History" and selflink == user:
                     result = 'success'
                 else:
+                    step = 5
                     result = 'failure'
             else:
                 userlink = soup.find("a", string=username)
@@ -320,20 +325,31 @@ def user_query_history(user, pwd, two_fa, username):
                     if login_hdr == "Spell Checker Query History" and userlink == username:
                         result = 'success'
                     else:
+                        step = 6
                         result = 'failure'
                 else:
                     if login_hdr == "Spell Checker Query History" and userlink == username:
+                        step = 7
                         result = 'failure'
                     else:
                         result = 'success'
         else:
+            step = 4
             result = 'failure'
     else:
+        step = 3
         result = 'failure'
 
     br.open(logout_url)
 
     br.close()
+
+    if result == 'failure':
+        print("Failed Step # : <" + step + ">\n" +
+              "Logged in as user: <" + user + "> ... checking Q hist for: <" + username +
+              "> ... page header: <" + login_hdr + "> ...  selflink: <" + selflink +
+              ">  ... userlink: <" + userlink + ">")
+
     return result
 
 
