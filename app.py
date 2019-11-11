@@ -103,5 +103,3 @@ db.session.commit()
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc', debug=True)
-    # with https for tox-travis testing
-    # app.run(ssl_context='adhoc', debug=True)
