@@ -303,7 +303,7 @@ def user_query_history(user, pwd, two_fa, username):
             response = br.open(history_url)
         if response.code != 200:
             step = 4
-            result = 'failure''
+            result = 'failure'
         else:
             response = response.read().decode('UTF-8')
             soup = BeautifulSoup(response, 'lxml')
