@@ -7,7 +7,6 @@ import http.cookiejar
 import time
 import random
 import ssl
-from functools import wraps
 
 # == monkey-patch ssl.wrap_socket() in the ssl module by overriding the ssl_version keyword parameter ==
 
@@ -251,193 +250,193 @@ def login_logout(user, pwd, two_fa):
     return result
 
 
-# ==========================================================================
-def user_query_history(user, pwd, two_fa, username):
-
-    step = 0
-    login_hdr = selflink = userlink = ''
-
-    br = mechanize.Browser()
-    br.set_debug_http(False)
-    br.set_handle_refresh(False)
-    br.set_handle_robots(False)
-
-    cj = http.cookiejar.CookieJar()
-    br.set_cookiejar(cj)
-
-    br.addheaders = [('User-agent',
-                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
-                     ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
-                     ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
-                     ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
-                     ('Connection', 'keep-alive')
-                     ]
-    response = br.open(login_url)
-    if response.code != 200:
-        step = 1
-        return 'failure'
-
-    # soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
-    # print(soup.prettify())
-
-    br.select_form(nr=0)
-    br.form['username'] = user
-    br.form['password'] = pwd
-    br.form['phone'] = two_fa
-    resp = br.submit()
-    if resp.code != 200:
-        br.close()
-        step = 2
-        return 'failure'
-
-    resp = resp.read().decode('UTF-8')
-    soup = BeautifulSoup(resp, 'lxml')
-    result = soup.find(id='result').text
-
-    # print(soup.prettify())
-
-    if result == 'success.':
-        if username != '':
-            response = br.open(history_url + '/' + username)
-        else:
-            response = br.open(history_url)
-        if response.code != 200:
-            step = 4
-            result = 'failure'
-        else:
-            response = response.read().decode('UTF-8')
-            soup = BeautifulSoup(response, 'lxml')
-            # print(soup.prettify())
-            login_hdr = soup.legend.text
-            selflink = soup.find("a", string=user)
-            if selflink is None:
-                selflink = ''
-            else:
-                selflink = selflink.text
-            if username == '':
-                if login_hdr == "Spell Checker Query History" and selflink == user:
-                    result = 'success'
-                else:
-                    step = 5
-                    result = 'failure'
-            else:
-                userlink = soup.find("a", string=username)
-                if userlink is None:
-                    userlink = ''
-                else:
-                    userlink = userlink.text
-                if user == 'admin':
-                    if login_hdr == "Spell Checker Query History" and userlink == username:
-                        result = 'success'
-                    else:
-                        step = 6
-                        result = 'failure'
-                else:
-                    if login_hdr == "Spell Checker Query History" and userlink == username:
-                        step = 7
-                        result = 'failure'
-                    else:
-                        result = 'success'
-    else:
-        step = 3
-        result = 'failure'
-
-    br.open(logout_url)
-
-    br.close()
-
-    if result == 'failure':
-        print("Failed Step # : <" + str(step) + ">\n" +
-              "Logged in as user: <" + user + "> ... checking Q hist for: <" + username +
-              "> ... page header: <" + login_hdr + "> ...  selflink: <" + selflink +
-              ">  ... userlink: <" + userlink + ">")
-
-    return result
-
-
-
-# ==========================================================================
-def user_login_history(user, pwd, two_fa, username):
-    br = mechanize.Browser()
-    br.set_debug_http(False)
-    br.set_handle_refresh(False)
-    br.set_handle_robots(False)
-
-    cj = http.cookiejar.CookieJar()
-    br.set_cookiejar(cj)
-
-    br.addheaders = [('User-agent',
-                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
-                     ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
-                     ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
-                     ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
-                     ('Connection', 'keep-alive')
-                     ]
-    response = br.open(login_url)
-    if response.code != 200:
-        return 'failure'
-
-    # soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
-    # print(soup.prettify())
-
-    br.select_form(nr=0)
-    br.form['username'] = user
-    br.form['password'] = pwd
-    br.form['phone'] = two_fa
-    resp = br.submit()
-    if resp.code != 200:
-        br.close()
-        return 'failure'
-
-    resp = resp.read().decode('UTF-8')
-    soup = BeautifulSoup(resp, 'lxml')
-    result = soup.find(id='result').text
-
-    # print(soup.prettify())
-
-    if result == 'success.':
-        if username != '':
-            response = br.open(login_history_url + '/' + username)
-        else:
-            response = br.open(login_history_url + '/' + user)
-        if response.code == 200:
-            response = response.read().decode('UTF-8')
-            soup = BeautifulSoup(response, 'lxml')
-            # print(soup.prettify())
-            login_history_hdr = '' if (soup.legend is None) else soup.legend.text
-
-            selflink = soup.find("a", string=user)
-            selflink = '' if selflink is None else selflink.text
-
-            if (username != ''):
-                userlink = soup.find("a", string=username)
-                userlink = '' if userlink is None else userlink.text
-
-            if user == 'admin' and username == '':
-                if login_history_hdr == "Spell Checker Activity History" and selflink == user:
-                    result = 'success'
-                else:
-                    result = 'failure'
-            elif user == 'admin' and username != '':
-                if login_history_hdr == "Spell Checker Activity History" and userlink == username:
-                    result = 'success'
-                else:
-                    result = 'failure'
-            elif user != 'admin':
-                if login_history_hdr != "Spell Checker Activity History":
-                    result = 'success'
-                else:
-                    result = 'failure'
-        else:
-            result = 'failure'
-    else:
-        result = 'failure'
-
-    br.open(logout_url)
-
-    br.close()
-    return result
-
+# # ==========================================================================
+# def user_query_history(user, pwd, two_fa, username):
+#
+#     step = 0
+#     login_hdr = selflink = userlink = ''
+#
+#     br = mechanize.Browser()
+#     br.set_debug_http(False)
+#     br.set_handle_refresh(False)
+#     br.set_handle_robots(False)
+#
+#     cj = http.cookiejar.CookieJar()
+#     br.set_cookiejar(cj)
+#
+#     br.addheaders = [('User-agent',
+#                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
+#                      ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
+#                      ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
+#                      ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
+#                      ('Connection', 'keep-alive')
+#                      ]
+#     response = br.open(login_url)
+#     if response.code != 200:
+#         step = 1
+#         return 'failure'
+#
+#     # soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
+#     # print(soup.prettify())
+#
+#     br.select_form(nr=0)
+#     br.form['username'] = user
+#     br.form['password'] = pwd
+#     br.form['phone'] = two_fa
+#     resp = br.submit()
+#     if resp.code != 200:
+#         br.close()
+#         step = 2
+#         return 'failure'
+#
+#     resp = resp.read().decode('UTF-8')
+#     soup = BeautifulSoup(resp, 'lxml')
+#     result = soup.find(id='result').text
+#
+#     # print(soup.prettify())
+#
+#     if result == 'success.':
+#         if username != '':
+#             response = br.open(history_url + '/' + username)
+#         else:
+#             response = br.open(history_url)
+#         if response.code != 200:
+#             step = 4
+#             result = 'failure'
+#         else:
+#             response = response.read().decode('UTF-8')
+#             soup = BeautifulSoup(response, 'lxml')
+#             # print(soup.prettify())
+#             login_hdr = soup.legend.text
+#             selflink = soup.find("a", string=user)
+#             if selflink is None:
+#                 selflink = ''
+#             else:
+#                 selflink = selflink.text
+#             if username == '':
+#                 if login_hdr == "Spell Checker Query History" and selflink == user:
+#                     result = 'success'
+#                 else:
+#                     step = 5
+#                     result = 'failure'
+#             else:
+#                 userlink = soup.find("a", string=username)
+#                 if userlink is None:
+#                     userlink = ''
+#                 else:
+#                     userlink = userlink.text
+#                 if user == 'admin':
+#                     if login_hdr == "Spell Checker Query History" and userlink == username:
+#                         result = 'success'
+#                     else:
+#                         step = 6
+#                         result = 'failure'
+#                 else:
+#                     if login_hdr == "Spell Checker Query History" and userlink == username:
+#                         step = 7
+#                         result = 'failure'
+#                     else:
+#                         result = 'success'
+#     else:
+#         step = 3
+#         result = 'failure'
+#
+#     br.open(logout_url)
+#
+#     br.close()
+#
+#     if result == 'failure':
+#         print("Failed Step # : <" + str(step) + ">\n" +
+#               "Logged in as user: <" + user + "> ... checking Q hist for: <" + username +
+#               "> ... page header: <" + login_hdr + "> ...  selflink: <" + selflink +
+#               ">  ... userlink: <" + userlink + ">")
+#
+#     return result
+#
+#
+#
+# # ==========================================================================
+# def user_login_history(user, pwd, two_fa, username):
+#     br = mechanize.Browser()
+#     br.set_debug_http(False)
+#     br.set_handle_refresh(False)
+#     br.set_handle_robots(False)
+#
+#     cj = http.cookiejar.CookieJar()
+#     br.set_cookiejar(cj)
+#
+#     br.addheaders = [('User-agent',
+#                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
+#                      ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
+#                      ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
+#                      ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
+#                      ('Connection', 'keep-alive')
+#                      ]
+#     response = br.open(login_url)
+#     if response.code != 200:
+#         return 'failure'
+#
+#     # soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
+#     # print(soup.prettify())
+#
+#     br.select_form(nr=0)
+#     br.form['username'] = user
+#     br.form['password'] = pwd
+#     br.form['phone'] = two_fa
+#     resp = br.submit()
+#     if resp.code != 200:
+#         br.close()
+#         return 'failure'
+#
+#     resp = resp.read().decode('UTF-8')
+#     soup = BeautifulSoup(resp, 'lxml')
+#     result = soup.find(id='result').text
+#
+#     # print(soup.prettify())
+#
+#     if result == 'success.':
+#         if username != '':
+#             response = br.open(login_history_url + '/' + username)
+#         else:
+#             response = br.open(login_history_url + '/' + user)
+#         if response.code == 200:
+#             response = response.read().decode('UTF-8')
+#             soup = BeautifulSoup(response, 'lxml')
+#             # print(soup.prettify())
+#             login_history_hdr = '' if (soup.legend is None) else soup.legend.text
+#
+#             selflink = soup.find("a", string=user)
+#             selflink = '' if selflink is None else selflink.text
+#
+#             if (username != ''):
+#                 userlink = soup.find("a", string=username)
+#                 userlink = '' if userlink is None else userlink.text
+#
+#             if user == 'admin' and username == '':
+#                 if login_history_hdr == "Spell Checker Activity History" and selflink == user:
+#                     result = 'success'
+#                 else:
+#                     result = 'failure'
+#             elif user == 'admin' and username != '':
+#                 if login_history_hdr == "Spell Checker Activity History" and userlink == username:
+#                     result = 'success'
+#                 else:
+#                     result = 'failure'
+#             elif user != 'admin':
+#                 if login_history_hdr != "Spell Checker Activity History":
+#                     result = 'success'
+#                 else:
+#                     result = 'failure'
+#         else:
+#             result = 'failure'
+#     else:
+#         result = 'failure'
+#
+#     br.open(logout_url)
+#
+#     br.close()
+#     return result
+#
 
 
 # # ==========================================================================
@@ -708,127 +707,127 @@ def test_spell_check_service():
     assert (not error), err_result
 
 
-# # ==========================================================================
-def test_user_query_history_admin():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #13: test_user_query_history_admin() - Call /history end-point and validate page\n"
-    user_name = "admin"
-
-    if user_query_history(user_name, 'Administrator@1', '12345678901', '') == 'success':
-        err_result = "Success! History pages successfully served for: <" + user_name + ">"
-    else:
-        error = True
-        result = "ERROR! History page failed to load for: <" + user_name + ">"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
-
-
-# # ==========================================================================
-def test_user_query_history_nonadmin():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #14: test_query_history_nonadmin() - Call /history end-point and validate page\n"
-    user_name = "actester1"
-
-    if user_query_history(user_name, '1111111111', '1111111111', '') == 'success':
-        err_result = "Success! History pages successfully served for: <" + user_name + ">"
-    else:
-        error = True
-        result = "ERROR! History page failed to load for: <" + user_name + ">"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
-
-
-# # ==========================================================================
-def test_user_query_history_admin_other_user():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #15: test_user_query_history_admin_other_user() - Call /history/actester1 end-point and validate page\n"
-    user_name = "admin"
-
-    if user_query_history(user_name, 'Administrator@1', '12345678901', 'actester1') == 'success':
-        err_result = "Success! History pages successfully served to <" + user_name + "> for <actester1>"
-    else:
-        error = True
-        result = "ERROR! History page failed to load for user: <" + user_name + "> for <actester1>"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
-
-
-# # ==========================================================================
-def test_user_query_history_nonadmin_other_user():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #16: test_query_history_nonadmin() - Call /history end-point and validate page\n"
-    user_name = "actester1"
-
-    if user_query_history(user_name, '1111111111', '1111111111', 'actester2') == 'success':
-        err_result = "Success! Unauthorized history page not server to <actester1>"
-    else:
-        error = True
-        result = "ERROR! Unauthorized history page served to <actester1> for user <actester2>"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
-
-
-# # ==========================================================================
-def test_user_login_history_admin():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #17: test_user_login_history_admin() - Call /login_history/admin end-point and validate page\n"
-    user_name = "admin"
-
-    if user_login_history(user_name, 'Administrator@1', '12345678901', '') == 'success':
-        err_result = "Success! Login History page successfully served for: <" + user_name + ">"
-    else:
-        error = True
-        result = "ERROR! Login History page failed to load for: <" + user_name + ">"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
-
-
-# # ==========================================================================
-def test_user_login_history_nonadmin():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #18: test_user_login_history_nonadmin() - Call /login_history/<user> end-point and validate page\n"
-    user_name = "actester1"
-
-    if user_login_history(user_name, '1111111111', '1111111111', '') == 'success':
-        err_result = "Success! Login History is not authorized for non-admin users like : <" + user_name + ">"
-    else:
-        error = True
-        result = "ERROR! Login History page erroneously served for user: <" + user_name + ">"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
-
-
-# # ==========================================================================
-def test_user_login_history_admin_other_user():
-# # ==========================================================================
-    error = False
-    err_result = result = ""
-    desc = "Test Case #19: test_user_login_history_admin_other_user() - Call /login_history/actester1 end-point and validate page\n"
-    user_name = "admin"
-
-    if user_login_history(user_name, 'Administrator@1', '12345678901', 'actester1') == 'success':
-        err_result = "Success! Login History pages successfully served to <" + user_name + "> for <actester1>"
-    else:
-        error = True
-        result = "ERROR! Login History page for <actester1> failed to load for user: <" + user_name + ">"
-
-    print(desc + result + err_result)
-    assert (not error), err_result
+# # # ==========================================================================
+# def test_user_query_history_admin():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #13: test_user_query_history_admin() - Call /history end-point and validate page\n"
+#     user_name = "admin"
+#
+#     if user_query_history(user_name, 'Administrator@1', '12345678901', '') == 'success':
+#         err_result = "Success! History pages successfully served for: <" + user_name + ">"
+#     else:
+#         error = True
+#         result = "ERROR! History page failed to load for: <" + user_name + ">"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
+#
+#
+# # # ==========================================================================
+# def test_user_query_history_nonadmin():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #14: test_query_history_nonadmin() - Call /history end-point and validate page\n"
+#     user_name = "actester1"
+#
+#     if user_query_history(user_name, '1111111111', '1111111111', '') == 'success':
+#         err_result = "Success! History pages successfully served for: <" + user_name + ">"
+#     else:
+#         error = True
+#         result = "ERROR! History page failed to load for: <" + user_name + ">"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
+#
+#
+# # # ==========================================================================
+# def test_user_query_history_admin_other_user():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #15: test_user_query_history_admin_other_user() - Call /history/actester1 end-point and validate page\n"
+#     user_name = "admin"
+#
+#     if user_query_history(user_name, 'Administrator@1', '12345678901', 'actester1') == 'success':
+#         err_result = "Success! History pages successfully served to <" + user_name + "> for <actester1>"
+#     else:
+#         error = True
+#         result = "ERROR! History page failed to load for user: <" + user_name + "> for <actester1>"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
+#
+#
+# # # ==========================================================================
+# def test_user_query_history_nonadmin_other_user():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #16: test_query_history_nonadmin() - Call /history end-point and validate page\n"
+#     user_name = "actester1"
+#
+#     if user_query_history(user_name, '1111111111', '1111111111', 'actester2') == 'success':
+#         err_result = "Success! Unauthorized history page not server to <actester1>"
+#     else:
+#         error = True
+#         result = "ERROR! Unauthorized history page served to <actester1> for user <actester2>"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
+#
+#
+# # # ==========================================================================
+# def test_user_login_history_admin():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #17: test_user_login_history_admin() - Call /login_history/admin end-point and validate page\n"
+#     user_name = "admin"
+#
+#     if user_login_history(user_name, 'Administrator@1', '12345678901', '') == 'success':
+#         err_result = "Success! Login History page successfully served for: <" + user_name + ">"
+#     else:
+#         error = True
+#         result = "ERROR! Login History page failed to load for: <" + user_name + ">"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
+#
+#
+# # # ==========================================================================
+# def test_user_login_history_nonadmin():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #18: test_user_login_history_nonadmin() - Call /login_history/<user> end-point and validate page\n"
+#     user_name = "actester1"
+#
+#     if user_login_history(user_name, '1111111111', '1111111111', '') == 'success':
+#         err_result = "Success! Login History is not authorized for non-admin users like : <" + user_name + ">"
+#     else:
+#         error = True
+#         result = "ERROR! Login History page erroneously served for user: <" + user_name + ">"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
+#
+#
+# # # ==========================================================================
+# def test_user_login_history_admin_other_user():
+# # # ==========================================================================
+#     error = False
+#     err_result = result = ""
+#     desc = "Test Case #19: test_user_login_history_admin_other_user() - Call /login_history/actester1 end-point and validate page\n"
+#     user_name = "admin"
+#
+#     if user_login_history(user_name, 'Administrator@1', '12345678901', 'actester1') == 'success':
+#         err_result = "Success! Login History pages successfully served to <" + user_name + "> for <actester1>"
+#     else:
+#         error = True
+#         result = "ERROR! Login History page for <actester1> failed to load for user: <" + user_name + ">"
+#
+#     print(desc + result + err_result)
+#     assert (not error), err_result
