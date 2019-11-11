@@ -131,73 +131,73 @@ def login(user, pwd, two_fa):
     br.close()
     return result
 
-# # ==========================================================================
-# def spellcheck(user, pwd, two_fa, words_to_check):
-#
-#     output_words = misspelled_words = "failure"
-#
-#     br = mechanize.Browser()
-#     br.set_debug_http(False)
-#     br.set_handle_refresh(False)
-#     br.set_handle_robots(False)
-#
-#     cj = http.cookiejar.CookieJar()
-#     br.set_cookiejar(cj)
-#
-#     br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
-#                      ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
-#                      ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
-#                      ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
-#                      ('Connection', 'keep-alive')
-#                     ]
-#     response = br.open(login_url)
-#     if response.code != 200:
-#         return 'failure', 'failure'
-#
-#     soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
-#     # print(soup.prettify())
-#
-#     br.select_form(nr = 0)
-#     br.form['username'] = user
-#     br.form['password'] = pwd
-#     br.form['phone'] = two_fa
-#     resp = br.submit()
-#     if resp.code != 200:
-#         return 'failure', 'failure'
-#
-#     resp = resp.read().decode('UTF-8')
-#     soup = BeautifulSoup(resp, 'lxml')
-#     # print(soup.prettify())
-#     result = soup.find(id='result').text
-#
-#     if result == 'success.':
-#         response = br.open(spellcheck_url)
-#         if response.code != 200:
-#             return 'failure', 'failure'
-#
-#         soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
-#         # print(soup.prettify())
-#
-#         br.select_form(nr = 0)
-#         br.form['input_content'] = words_to_check
-#         resp = br.submit()
-#         if resp.code != 200:
-#             return 'failure', 'failure'
-#
-#         resp = resp.read().decode('UTF-8')
-#         soup = BeautifulSoup(resp, 'lxml')
-#         # print(soup.prettify())
-#
-#         output_words = soup.find("textarea", id="textout").string
-#         misspelled_words = soup.find("textarea", id="misspelled").string
-#
-#         response = br.open(logout_url)
-#         if response.code != 200:
-#             return 'failure', 'failure'
-#
-#     br.close()
-#     return output_words, misspelled_words
-#
+# ==========================================================================
+def spellcheck(user, pwd, two_fa, words_to_check):
+
+    output_words = misspelled_words = "failure"
+
+    br = mechanize.Browser()
+    br.set_debug_http(False)
+    br.set_handle_refresh(False)
+    br.set_handle_robots(False)
+
+    cj = http.cookiejar.CookieJar()
+    br.set_cookiejar(cj)
+
+    br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'),
+                     ('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
+                     ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3'),
+                     ('Accept-Language', 'en-US,en;q=0.8,fr;q=0.6'),
+                     ('Connection', 'keep-alive')
+                    ]
+    response = br.open(login_url)
+    if response.code != 200:
+        return 'failure', 'failure'
+
+    soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
+    # print(soup.prettify())
+
+    br.select_form(nr = 0)
+    br.form['username'] = user
+    br.form['password'] = pwd
+    br.form['phone'] = two_fa
+    resp = br.submit()
+    if resp.code != 200:
+        return 'failure', 'failure'
+
+    resp = resp.read().decode('UTF-8')
+    soup = BeautifulSoup(resp, 'lxml')
+    # print(soup.prettify())
+    result = soup.find(id='result').text
+
+    if result == 'success.':
+        response = br.open(spellcheck_url)
+        if response.code != 200:
+            return 'failure', 'failure'
+
+        soup = BeautifulSoup(response.read().decode('UTF-8'), 'lxml')
+        # print(soup.prettify())
+
+        br.select_form(nr = 0)
+        br.form['input_content'] = words_to_check
+        resp = br.submit()
+        if resp.code != 200:
+            return 'failure', 'failure'
+
+        resp = resp.read().decode('UTF-8')
+        soup = BeautifulSoup(resp, 'lxml')
+        # print(soup.prettify())
+
+        output_words = soup.find("textarea", id="textout").string
+        misspelled_words = soup.find("textarea", id="misspelled").string
+
+        response = br.open(logout_url)
+        if response.code != 200:
+            return 'failure', 'failure'
+
+    br.close()
+    return output_words, misspelled_words
+
 # # ==========================================================================
 # def login_logout(user, pwd, two_fa):
 #
@@ -255,9 +255,17 @@ def login(user, pwd, two_fa):
 def user_query_history(user, pwd, two_fa, username):
 
     step = 0
+    output_words = misspelled_words = ""
+    input_words = "one onne two twoo three thre four foure dont worrie bei happpy 1234567890 $elephant$ %mon*key"
     login_hdr = selflink = userlink = ''
+
+    register('admin', 'Administrator@1', '12345678901')
     register('actester1', '1111111111', '1111111111')
     register('actester2', '2222222222', '2222222222')
+
+    spellcheck('admin', 'Administrator@1', '12345678901', input_words)
+    spellcheck('actester1', '1111111111', '1111111111', input_words)
+    spellcheck('actester2', '2222222222', '2222222222', input_words)
 
     br = mechanize.Browser()
     br.set_debug_http(False)
